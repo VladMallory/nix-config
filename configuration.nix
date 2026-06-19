@@ -42,7 +42,7 @@
     extraPackages = with pkgs; [
       waybar
       alacritty
-      rofi-wayland
+      rofi
     ];
   };
 
@@ -74,11 +74,16 @@
 
   # Шрифты с иконками для Waybar
   fonts.packages = with pkgs; [
-    nerdfonts
+    nerd-fonts.jetbrains-mono
   ];
 
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  # Разрешаем установку конкретной небезопасной версии Electron
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-39.8.10"
+  ];
 
   # Автоматическое управление конфигами и софтом пользователя
   home-manager = {
@@ -106,7 +111,7 @@
         # Декларативный Zsh
         programs.zsh = {
           enable = true;
-          enableAutosuggestions = true;
+          autosuggestion.enable = true;
           syntaxHighlighting.enable = true;
 
           oh-my-zsh = {
