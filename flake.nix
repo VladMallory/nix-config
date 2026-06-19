@@ -28,7 +28,7 @@
     , ...
     } @ inputs: {
       nixosConfigurations.nixos-dev = nixpkgs.lib.nixosSystem {
-        system = "aarch64-linux"; # Для Apple Silicon Mac (M1/M2/M3). Если Intel — смените на x86_64-linux
+        system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
           disko.nixosModules.disko

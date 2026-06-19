@@ -4,8 +4,9 @@
 , ...
 }: {
   imports = [
-    ./hardware-configuration.nix # Генерируется автоматически, в Git слать не нужно
+    ./hardware-configuration.nix
     ./disk-config.nix
+    ./desktop-apps.nix
   ];
 
   # Настройки загрузчика системы
@@ -16,15 +17,13 @@
   networking.hostName = "nixos-dev";
   networking.networkmanager.enable = true;
 
-  # Локализация и часовой пояс (Уссурийск)
   time.timeZone = "Asia/Vladivostok";
   i18n.defaultLocale = "ru_RU.UTF-8";
 
   # 1. Включаем Docker-демона
   virtualisation.docker.enable = true;
 
-  # 2. Включаем ультимативный слой совместимости nix-ld.
-  # Он нужен, чтобы запущенный из-под curl скрипта OpenCode понимал файловую систему NixOS
+  # 2. Включаем слой совместимости nix-ld для бинарников извне
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
     stdenv.cc.cc
@@ -34,24 +33,30 @@
     curl
   ];
 
-  # 3. Включаем графическую среду Sway
+  # 3. Включаем Zsh на уровне системы
+  programs.zsh.enable = true;
+
+  # 4. Включаем графическую среду Sway
   programs.sway = {
     enable = true;
     extraPackages = with pkgs; [
-      waybar # Ваша панель статуса
-      foot # Легкий и быстрый терминал для Wayland
-      dmenu # Программа запуска приложений
+      waybar
+      alacritty
+      rofi-wayland
     ];
   };
+
+  # Автоматический вход в консоль без ввода логина и пароля
+  services.getty.autologinUser = "vladislav";
 
   # Настройка основного пользователя
   users.users.vladislav = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "docker" ]; # wheel дает sudo, docker — работу без sudo
-    initialPassword = "changeme"; # Смените пароль через `passwd` после первого входа
+    shell = pkgs.zsh;
+    extraGroups = [ "wheel" "networkmanager" "docker" ];
+    initialPassword = "changeme";
   };
 
-  # Список системных пакетов
   environment.systemPackages = with pkgs; [
     make
     git
@@ -62,6 +67,7 @@
     # Go-окружение разработки
     go
     gopls
+    gofumpt
     delve
     golangci-lint
   ];
@@ -80,7 +86,6 @@
     useUserPackages = true;
     extraSpecialArgs = { inherit inputs; };
 
-    # Обрати внимание: добавился аргумент `lib` для работы скриптов активации
     users.vladislav =
       { pkgs
       , lib
@@ -88,20 +93,31 @@
       }: {
         home.stateVersion = "24.11";
 
-        # Добавляем в PATH пути, куда скрипт OpenCode обычно ставит свои бинарники
         home.sessionPath = [
           "$HOME/.local/bin"
         ];
 
-        # Синхронизация твоих конфигов оконного менеджера из репозитория for_oneself
+        # Синхронизация конфигов из твоего репозитория for_oneself
         xdg.configFile."sway/config".source = "${inputs.dotfiles}/wm/sway/config";
         xdg.configFile."waybar/config".source = "${inputs.dotfiles}/wm/waybar/config";
         xdg.configFile."waybar/style.css".source = "${inputs.dotfiles}/wm/waybar/style.css";
+        xdg.configFile."alacritty/alacritty.toml".source = "${inputs.dotfiles}/alacrity/alacrity.toml";
+
+        # Декларативный Zsh
+        programs.zsh = {
+          enable = true;
+          enableAutosuggestions = true;
+          syntaxHighlighting.enable = true;
+
+          oh-my-zsh = {
+            enable = true;
+            theme = "robbyrussell";
+            plugins = [ "git" ];
+          };
+        };
 
         # 🔥 МАГИЯ АВТОУСТАНОВКИ OPENCODE
-        # Этот скрипт выполнится автоматически в самом конце сборки системы Nix-ом
         home.activation.autoInstallOpenCode = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          # Проверяем, установлена ли уже утилита, чтобы не скачивать её при каждой пересборке
           if [ ! -f "$HOME/.local/bin/opencode" ]; then
             echo "=== NixOS автоматически устанавливает OpenCode ==="
             ${pkgs.curl}/bin/curl -fsSL https://opencode.ai/install | ${pkgs.bash}/bin/bash
