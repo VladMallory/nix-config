@@ -24,7 +24,7 @@ nix-shell -p git
 
 # Клонируем этот репозиторий во временную директорию
 ```bash
-git clone [https://github.com/VladMallory/nix-config](https://github.com/VladMallory/nix-config) /tmp/nix-config
+git clone https://github.com/VladMallory/nix-config /tmp/nix-config
 ```
 
 # Переходим в папку с конфигами
@@ -35,6 +35,12 @@ cd /tmp/nix-config
 Разметка диска
 ```bash
 nix run github:nix-community/disko -- --mode zap_create_mount ./disk-config.nix
+```
+
+Если жалуется, то:
+```bash
+nix --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode zap_create_mount ./disk-config.nix
+
 ```
 
 # Генерируем hardware-configuration.nix без перезаписи файловых систем
