@@ -14,6 +14,12 @@
 
 Загрузитесь с официального **NixOS Minimal ISO** образца. Убедитесь, что интернет подключен, и выполните следующие команды:
 
+Одной командой 
+```bash
+get https://raw.githubusercontent.com/VladMallory/nix-config/main/install.sh | sudo bash
+```
+
+---
 ### Шаг 1. Переход в root и запуск Git
 ```bash
 # Переходим в режим суперпользователя
