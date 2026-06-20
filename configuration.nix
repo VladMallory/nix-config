@@ -58,7 +58,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    make
+    gnumake
     git
     curl
     btop
