@@ -3,7 +3,7 @@
     disk = {
       my-disk = {
         type = "disk";
-        device = "/dev/vda"; # Стандартное имя диска внутри виртуалки UTM
+        device = "/dev/nvme0n1"; # Стандартное имя диска внутри виртуалки UTM
         content = {
           type = "gpt";
           partitions = {
