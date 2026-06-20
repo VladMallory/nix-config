@@ -3,17 +3,17 @@
 , ...
 }: {
   environment.systemPackages = with pkgs; [
-    discord
-    obsidian
-    localsend
-    brave
-    bitwarden-desktop
-    element-desktop
-    qbittorrent
-    flclash
-    telegram-desktop
-    vlc
-    ffmpeg
+    # discord
+    # obsidian
+    # localsend
+    # brave
+    # bitwarden-desktop
+    # element-desktop
+    # qbittorrent
+    # flclash
+    # telegram-desktop
+    # vlc
+    # ffmpeg
   ];
 
   programs.steam = {
