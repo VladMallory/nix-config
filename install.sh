@@ -6,7 +6,7 @@ nix-shell -p git --run "git clone https://github.com/VladMallory/nix-config /tmp
 
 #!/usr/bin/env bash
 set -e
-
+cd /tmp/nix-config
 # 1. Разметка диска через disko
 nix --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode zap_create_mount ./disk-config.nix
 
