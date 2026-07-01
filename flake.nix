@@ -1,19 +1,19 @@
 {
-  description = "Vladislav's NixOS Dev Environment Flake";
+  description = "Vladislav's Nix Configuration";
 
   inputs = {
-    # Используем нестабильную ветку для самых свежих версий Go, gopls и т.д.
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/release-26.05";
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-26.05-darwin";
 
-    # Модуль декларативной разметки дисков
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Управление пользовательскими конфигами (dotfiles)
-    home-manager.url = "github:nix-community/home-manager";
+    home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Ваш личный репозиторий с конфигурациями Sway/Waybar
+    darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
+    darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
+
     dotfiles = {
       url = "github:VladMallory/for_oneself";
       flake = false;
@@ -21,10 +21,10 @@
   };
 
   outputs =
-    { self
-    , nixpkgs
+    { nixpkgs
     , disko
     , home-manager
+    , darwin
     , ...
     } @ inputs: {
       nixosConfigurations.nixos-dev = nixpkgs.lib.nixosSystem {
@@ -33,7 +33,16 @@
         modules = [
           disko.nixosModules.disko
           home-manager.nixosModules.home-manager
-          ./configuration.nix
+          ./linux/configuration.nix
+        ];
+      };
+
+      darwinConfigurations.default = darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = { inherit inputs; };
+        modules = [
+          home-manager.darwinModules.home-manager
+          ./macos/configuration.nix
         ];
       };
     };

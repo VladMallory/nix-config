@@ -3,10 +3,13 @@
 Репозиторий содержит полную конфигурацию для развертывания чистой операционной системы NixOS с графической средой Sway, терминалом Alacritty, шеллом Zsh и предустановленным окружением для Go-разработки.
 
 ## Структура репозитория
-* `flake.nix` — точка входа для Nix Flakes.
-* `configuration.nix` — системные настройки (пользователи, Docker, nix-ld, шрифты).
-* `desktop-apps.nix` — пользовательский софт (Telegram, Discord, Brave, Steam и мультимедиа).
-* `disk-config.nix` — декларативная разметка дисков через `disko`.
+* `flake.nix` — точка входа для Nix Flakes; outputs для NixOS (`nixos-dev`) и nix-darwin (`default`).
+* `shared/packages.nix` — общие для всех платформ пакеты (Go, neovim и т.д.).
+* `shared/home.nix` — общий home-manager конфиг (zsh, dotfiles, OpenCode).
+* `linux/configuration.nix` — системные настройки NixOS (пользователи, Docker, sway).
+* `linux/disk-config.nix` — декларативная разметка дисков через `disko`.
+* `linux/desktop-apps.nix` — пользовательский софт (Steam и т.д.).
+* `macos/configuration.nix` — системные настройки macOS через nix-darwin.
 
 ---
 
@@ -16,7 +19,7 @@
 
 Одной командой 
 ```bash
-get https://raw.githubusercontent.com/VladMallory/nix-config/main/install.sh | sudo bash
+curl -L https://raw.githubusercontent.com/VladMallory/nix-config/main/install.sh | sudo bash
 ```
 
 ---
@@ -40,12 +43,12 @@ cd /tmp/nix-config
 
 Разметка диска
 ```bash
-nix run github:nix-community/disko -- --mode zap_create_mount ./disk-config.nix
+nix run github:nix-community/disko -- --mode zap_create_mount ./linux/disk-config.nix
 ```
 
 Если жалуется, то:
 ```bash
-nix --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode zap_create_mount ./disk-config.nix
+nix --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode zap_create_mount ./linux/disk-config.nix
 
 ```
 

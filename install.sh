@@ -8,7 +8,7 @@ nix-shell -p git --run "git clone https://github.com/VladMallory/nix-config /tmp
 set -e
 cd /tmp/nix-config
 # 1. Разметка диска через disko
-nix --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode zap_create_mount ./disk-config.nix
+nix --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode zap_create_mount ./linux/disk-config.nix
 
 dd if=/dev/zero of=/mnt/.swapfile bs=1M count=8192
 chmod 600 /mnt/.swapfile
