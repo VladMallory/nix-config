@@ -5,9 +5,11 @@
 }: {
   imports = [
     ../shared/cache.nix
-    ../shared/packages.nix
+    ../shared/packages/dev.nix
+    ../shared/packages/packages.nix
     ./disk-config.nix
-    ./desktop-apps.nix
+    ./packages/dev.nix
+    ./packages/packages.nix
   ];
 
   boot.loader.systemd-boot.enable = true;

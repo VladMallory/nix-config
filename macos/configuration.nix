@@ -1,12 +1,10 @@
-{ config
-, pkgs
-, inputs
-, ...
-}: {
+{ inputs, ... }: {
   imports = [
     ../shared/cache.nix
-    ../shared/packages.nix
-    ./packages.nix
+    ../shared/packages/dev.nix
+    ../shared/packages/packages.nix
+    ./packages/dev.nix
+    ./packages/packages.nix
   ];
 
   system.primaryUser = "vlad";
@@ -56,6 +54,7 @@
       imports = [
         ../shared/home.nix
         ./home.nix
+        ./packages/brew.nix
       ];
     };
   };

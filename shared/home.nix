@@ -28,14 +28,28 @@
       theme = "robbyrussell";
       plugins = [ "git" ];
     };
+
+    shellAliases = {
+      n = "nvim";
+    };
   };
 
   home.activation.installGoland = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     echo "=== Устанавливаю GoLand ==="
+    export NIXPKGS_ALLOW_UNFREE=1
     ${pkgs.nix}/bin/nix build "nixpkgs#jetbrains.goland" \
       --out-link "$HOME/.local/share/goland" \
       --extra-experimental-features flakes \
-      2>/dev/null || echo "⚠️  GoLand пропущен (не скачался)"
+      --impure \
+      || echo "⚠️  GoLand пропущен (не скачался)"
+
+    if [ "$(uname)" = "Darwin" ] && [ -d "$HOME/.local/share/goland/Applications" ]; then
+      app=$(find "$HOME/.local/share/goland/Applications" -name "*.app" -maxdepth 1 | head -n1)
+      if [ -n "$app" ]; then
+        echo "=== Создаю symlink в /Applications ==="
+        sudo ln -sf "$app" /Applications/
+      fi
+    fi
   '';
 
   home.activation.autoInstallOpenCode = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
