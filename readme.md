@@ -4,6 +4,11 @@
 
 ## Автоматически
 ```bash
+nix-shell -p curl --run "curl -L https://raw.githubusercontent.com/VladMallory/nix-config/main/install.sh | bash"
+```
+
+*Вроде не работает*
+```bash
 curl -L https://raw.githubusercontent.com/VladMallory/nix-config/main/install.sh | sudo bash
 ```
 
