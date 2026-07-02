@@ -11,6 +11,7 @@
 
   system.primaryUser = "vlad";
   system.defaults.dock.autohide = false;
+  system.defaults.finder.AppleShowAllExtensions = true;
 
   system.defaults.CustomUserPreferences = {
     "com.apple.dock" = {
@@ -58,6 +59,11 @@
       ];
     };
   };
+
+  # Terminfo alacritty не установлен в macOS system terminfo db,
+  # а nix-darwin's set-environment проверяет TERM при запуске.
+  # Устанавливаем TERM=xterm-256color на уровне системы.
+  environment.variables.TERM = "xterm-256color";
 
   system.stateVersion = 5;
 }

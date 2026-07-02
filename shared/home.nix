@@ -4,11 +4,17 @@
   home.homeDirectory = lib.mkIf pkgs.stdenv.isDarwin (lib.mkForce "/Users/vlad");
 
   home.sessionPath = [
+    "/opt/homebrew/bin"
+    "/opt/homebrew/sbin"
     "$HOME/.local/bin"
     "$HOME/.opencode/bin"
+    "$HOME/golang/ffmpeg"
   ];
 
-  programs.alacritty.enable = true;
+  programs.alacritty = {
+    enable = true;
+    settings = builtins.fromTOML (builtins.readFile "${inputs.dotfiles}/alacrity/alacrity.toml");
+  };
 
   home.sessionVariables.TERM = "xterm-256color";
 
