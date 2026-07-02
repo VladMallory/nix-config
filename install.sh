@@ -7,7 +7,15 @@ cd /tmp/nix-config
 
 SUBSTITUTERS="https://cache.nixos.org https://mirror.sjtu.edu.cn/nix-channels/store https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
 
-nix --extra-experimental-features "nix-command flakes" run github:nix-community/disko --option substituters "$SUBSTITUTERS" -- --mode disko ./linux/disk-config.nix || true
+mkdir -p /etc/nix
+cat > /etc/nix/nix.conf << EOF
+substituters = $SUBSTITUTERS
+trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+connect-timeout = 5
+experimental-features = nix-command flakes
+EOF
+
+nix --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko ./linux/disk-config.nix || true
 
 ROOT_PART=$(lsblk -l -p -o name,partlabel | grep "disk-my-disk-root$" | awk '{print $1}')
 ESP_PART=$(lsblk -l -p -o name,partlabel | grep "disk-my-disk-ESP$" | awk '{print $1}')
