@@ -4,7 +4,6 @@ let wallpaper = import ../shared/wallpaper.nix; in {
     "sway/config".source = "${inputs.dotfiles}/wm/sway/config";
     "waybar/config".source = "${inputs.dotfiles}/wm/waybar/config";
     "waybar/style.css".source = "${inputs.dotfiles}/wm/waybar/style.css";
-    "alacritty/alacritty.toml".source = "${inputs.dotfiles}/alacrity/alacrity.toml";
   };
 
   home.activation.setWallpaper = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
